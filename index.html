@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ligue Championnat - Accueil</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Ajustements esthétiques exclusifs pour le style LaLiga */
+        .flex-layout { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 20px; }
+        .left-column { flex: 2; min-width: 600px; }
+        .right-column { flex: 1; min-width: 300px; }
+        
+        /* Légendes & Frontières de qualification comme en Espagne */
+        .cl-zone { border-left: 5px solid #0052cc !important; font-weight: bold; }          /* Places 1 à 4 : Champions League */
+        .el-zone { border-left: 5px solid #ff8800 !important; font-weight: bold; }          /* Places 5 et 6 : Europa League */
+        .relegation-zone { border-left: 5px solid #d93838 !important; font-weight: bold; }   /* Places 18 à 20 : Relégation */
+        
+        .legend-box { display: flex; gap: 15px; margin-top: 15px; font-size: 0.85em; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 4px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .bullet { width: 12px; height: 12px; border-radius: 2px; }
+
+        /* Design des cartes pour la liste des matchs */
+        .match-card { background: #fff; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); color: #333; display: flex; justify-content: space-between; align-items: center; }
+        .match-teams { font-weight: bold; font-size: 0.95em; }
+        .match-score { background: #111; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <h2>🏆 LiveLeague</h2>
+            <div>
+                <a href="index.html" class="active">Classement</a>
+                <a href="stats.html">Statistiques</a>
+                <a href="teams.html">Équipes</a>
+                <a href="login.html">Connexion</a>
+                <a href="dashboard.html">Admin</a>
+
+            </div>
+        </nav>
+
+        <h1>Tableau du Championnat</h1>
+        
+        <div class="flex-layout">
+            <!-- COLONNE GAUCHE : LE CLASSEMENT DU CHAMPIONNAT -->
+            <div class="left-column">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th style="text-align: left; padding-left: 15px;">Équipe</th>
+                                <th>MJ</th>
+                                <th>G</th>
+                                <th>N</th>
+                                <th>P</th>
+                                <th>BP</th>
+                                <th>BC</th>
+                                <th>DB</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-table">
+                            <!-- Les données PostgreSQL viendront s'insérer ici dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Boîte de Légende Officielle LaLiga -->
+                <div class="legend-box">
+                    <div class="legend-item"><div class="bullet" style="background: #0052cc;"></div> UEFA Champions League (1-4)</div>
+                    <div class="legend-item"><div class="bullet" style="background: #ff8800;"></div> UEFA Europa League (5-6)</div>
+                    <div class="legend-item"><div class="bullet" style="background: #d93838;"></div> Relégation en D2 (18-20)</div>
+                </div>
+            </div>
+
+            <!-- COLONNE DROITE : LES DERNIERS RÉSULTATS ENREGISTRÉS -->
+            <!-- COLONNE DROITE : LE CALENDRIER FILTRÉ -->
+            <div class="right-column">
+               <h2>📅 Calendrier du Championnat</h2>
+              <!-- Filtre en temps réel exigé par votre projet -->
+            <div style="margin-bottom: 15px;">
+                <label for="roundFilter" style="font-weight: bold; color: var(--text-muted);">Filtrer par Journée :</label>
+                <select id="roundFilter" style="padding: 6px 12px; border-radius: 4px; border: 1px solid #ddd; margin-left: 10px; font-weight: bold;">
+                    <!-- Les options de journées (J1, J2, J3...) seront injectées dynamiquement par JavaScript -->
+                </select>
+            </div>
+            <div class="right-column">
+                <h2>📅 Derniers Matchs</h2>
+                <div id="matches-container">
+                    <!-- Les scores des matchs terminés apparaîtront ici -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Conteneur dynamique des matchs de la journée sélectionnée -->
+        <div id="matches-container">
+            <!-- Rempli dynamiquement en JS -->
+        </div>
+    </div>
+    <!-- Conservation de votre fichier de script d'origine -->
+    <script src="js/ranking.js"></script>
+</body>
+</html>

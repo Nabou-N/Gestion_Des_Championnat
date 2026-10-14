@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistiques du Championnat</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <h2>🏆 LiveLeague</h2>
+            <div>
+                <a href="index.html">Classement</a>
+                <a href="stats.html" class="active">Statistiques</a>
+                <a href="teams.html">Équipes</a>
+                <a href="login.html">Connexion</a>
+            </div>
+        </nav>
+
+        <h1>Tableaux des Performances</h1>
+        
+        <div class="grid-stats">
+            
+            <!-- Bloc Meilleurs Buteurs (Classe table-container) -->
+            <div class="table-container">
+                <h2>⚽ Meilleurs Buteurs</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Joueur</th>
+                            <th>Club</th>
+                            <th>Buts</th>
+                        </tr>
+                    </thead>
+                    <!-- CORRECTION : Ajout de l'ID unique exact pour le JS -->
+                    <tbody id="scorers-table-body">
+                        <tr><td colspan="4" style="text-align:center;">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bloc Meilleurs Passeurs (Classe table-container harmonisée !) -->
+            <div class="table-container">
+                <h2>🎯 Meilleurs Passeurs</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Joueur</th>
+                            <th>Club</th>
+                            <th>Passes</th>
+                        </tr>
+                    </thead>
+                    <!-- CORRECTION : Ajout de l'ID unique exact pour le JS -->
+                    <tbody id="assisters-table-body">
+                        <tr><td colspan="4" style="text-align:center;">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script de dynamisation dédié -->
+    <script src="js/stats.js"></script>
+</body>
+</html>

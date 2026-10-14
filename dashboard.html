@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .grid-admin { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        /* Cache la page par défaut le temps de vérifier le jeton */
+        body { display: none; } 
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <h2>⚙️ Dashboard Admin</h2>
+            <div>
+                <a href="index.html">Voir le Classement</a>
+                <!-- Changement ici : id ajouté pour intercepter le clic en JS -->
+                <a href="#" id="logoutBtn">Déconnexion</a>
+            </div>
+        </nav>
+            <!-- Bouton d'action pour LaLiga -->
+            <div style="background: #1a1d24; padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #2d323f; text-align: center;">
+                <h3 style="color: #fff; margin-top: 0;">📅 Gestion du Championnat</h3>
+                <p style="color: #8a94a6; font-size: 0.9em;">Assurez-vous d'avoir créé toutes vos équipes avant de cliquer.</p>
+                <button id="generateCalendarBtn" style="background: #2ecc71; color: white; padding: 10px 20px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">
+                    🚀 Générer le Calendrier Automatique Aller-Retour
+                </button>
+            </div>
+            <div class="grid-admin">
+            <!-- Formulaire Équipe -->
+            <div class="table-container">
+                <h2>Créer une Équipe</h2>
+                <form id="teamForm">
+                    <div class="form-group">
+                        <label>Nom du Club</label>
+                        <input type="text" id="teamName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ville</label>
+                        <input type="text" id="teamCity" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Année de fondation</label>
+                        <input type="number" id="teamYear">
+                    </div>
+                    <button type="submit">Enregistrer l'Équipe</button>
+                </form>
+            </div>
+            <!-- Formulaire Score Match avec Filtre Domicile / Extérieur -->
+            <div class="table-container">
+                <h2>Saisir un Score & Détails </h2>
+                <form id="matchForm">
+                <input type="hidden" id="scoreHome" value="0">
+                <input type="hidden" id="scoreAway" value="0">
+
+                    <!-- 1. Sélection du match -->
+                    <div class="form-group">
+                        <label>Sélectionner le Match</label>
+                        <select id="scoreMatchSelect" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd; font-weight: bold;">
+                            <option value="">-- Choisissez un match --</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 2. Les scores finaux -->
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label id="labelHome">Score Domicile</label>
+                            <input type="number" id="scoreHome" value="0" readonly style="background-color: #f4f4f4; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label id="labelAway">Score Extérieur</label>
+                            <input type="number" id="scoreAway" value="0" readonly style="background-color: #f4f4f4; cursor: not-allowed;">
+                        </div>
+                    </div>
+                  <!-- 3. ZONE DYNAMIQUE : COMPOSITION DE LA FEUILLE DE MATCH -->
+                    <div id="eventsSection" style="display: none; margin-top: 20px; flex-direction: column; gap: 15px; width: 100%;">
+                        
+                        <!-- ⚡ CONTENEUR CÔTE À CÔTE OPTIMISÉ SANS SCROLL ⚡ -->
+                        <div style="display: flex !important; flex-direction: row !important; gap: 15px !important; align-items: flex-start !important; width: 100% !important; box-sizing: border-box !important;">
+                            
+                            <!-- COLONNE GAUCHE : ÉQUIPE DOMICILE -->
+                            <div style="flex: 1 !important; min-width: 0 !important; background: rgba(46, 204, 113, 0.05); padding: 10px; border-radius: 8px; border-left: 4px solid #2ecc71; box-sizing: border-box;">
+                                <h4 style="margin-top: 0; margin-bottom: 10px; color: #2ecc71; font-size: 0.95em;" id="titleHomeTeam">🏡 Buteurs & Cartons : FC Barcelone</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <select id="homeScorerSelect" style="width: 100%; min-width: 0;"><option value="">-- Buteur --</option></select>
+                                    <select id="homeAssisterSelect" style="width: 100%; min-width: 0;"><option value="">-- Passeur --</option></select>
+                                </div>
+                                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                    <input type="number" id="homeGoalMinute" min="1" max="120" placeholder="Min" style="width: 60px; text-align: center;">
+                                    <button type="button" id="addHomeGoalBtn" style="background: #2ecc71; color: white; border: none; padding: 6px; font-weight: bold; border-radius: 4px; cursor: pointer; flex: 1;">⚽ +</button>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 90px; gap: 8px; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                    <select id="homeCardPlayerSelect" style="width: 100%; min-width: 0;"><option value="">-- Joueur --</option></select>
+                                    <select id="homeCardTypeSelect" style="width: 100%;">
+                                        <option value="Yellow">🟨 Jaune</option>
+                                        <option value="Red">🟥 Rouge</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                    <input type="number" id="homeCardMinute" min="1" max="120" placeholder="Min" style="width: 60px; text-align: center;">
+                                    <button type="button" id="addHomeCardBtn" style="background: #f1c40f; color: black; border: none; padding: 6px; font-weight: bold; border-radius: 4px; cursor: pointer; flex: 1;">🟨🟥 +</button>
+                                </div>
+                            </div>
+
+                            <!-- COLONNE DROITE : ÉQUIPE EXTÉRIEUR -->
+                            <div style="flex: 1 !important; min-width: 0 !important; background: rgba(52, 152, 219, 0.05); padding: 10px; border-radius: 8px; border-left: 4px solid #3498db; box-sizing: border-box;">
+                                <h4 style="margin-top: 0; margin-bottom: 10px; color: #3498db; font-size: 0.95em;" id="titleAwayTeam">🚀 Buteurs & Cartons : RCD Espanyol</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <select id="awayScorerSelect" style="width: 100%; min-width: 0;"><option value="">-- Buteur --</option></select>
+                                    <select id="awayAssisterSelect" style="width: 100%; min-width: 0;"><option value="">-- Passeur --</option></select>
+                                </div>
+                                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                    <input type="number" id="awayGoalMinute" min="1" max="120" placeholder="Min" style="width: 60px; text-align: center;">
+                                    <button type="button" id="addAwayGoalBtn" style="background: #3498db; color: white; border: none; padding: 6px; font-weight: bold; border-radius: 4px; cursor: pointer; flex: 1;">⚽ +</button>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 90px; gap: 8px; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                    <select id="awayCardPlayerSelect" style="width: 100%; min-width: 0;"><option value="">-- Joueur --</option></select>
+                                    <select id="awayCardTypeSelect" style="width: 100%;">
+                                        <option value="Yellow">🟨 Jaune</option>
+                                        <option value="Red">🟥 Rouge</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                    <input type="number" id="awayCardMinute" min="1" max="120" placeholder="Min" style="width: 60px; text-align: center;">
+                                    <button type="button" id="addAwayCardBtn" style="background: #f1c40f; color: black; border: none; padding: 6px; font-weight: bold; border-radius: 4px; cursor: pointer; flex: 1;">🟨🟥 +</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Liste des événements enregistrés en dessous -->
+                        <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 4px;">
+                            <h5 style="margin: 0 0 5px 0; color: #fff;">📝 Événements en attente d'enregistrement :</h5>
+                            <ul id="temporaryGoalsList" style="margin: 0; color: #2ecc71; padding-left: 20px; font-size: 0.85em;"></ul>
+                            <ul id="temporaryCardsList" style="margin: 5px 0 0 0; color: #f1c40f; padding-left: 20px; font-size: 0.85em;"></ul>
+                        </div>
+                    </div>
+
+                    <button type="submit" style="background: #ff4a4a; color: white; margin-top: 20px; width: 100%; padding: 12px; font-weight: bold; border: none; border-radius: 4px; font-size: 1.05em; cursor: pointer;">
+                        Clôturer le Match & Sauvegarder la Feuille de Match
+                    </button>
+                </form>
+            </div>
+
+
+       <!-- À remplacer dans dashboard.html -->
+        <div class="table-container" style="margin-top: 20px;">
+            <h2>Ajouter un Joueur à un Club</h2>
+            <form id="playerForm">
+                <div class="form-group">
+                    <label>Prénom du Joueur</label>
+                    <input type="text" id="playerFirstName" placeholder="Ex: Kylian" required>
+                </div>
+                <div class="form-group">
+                    <label>Nom du Joueur</label>
+                    <input type="text" id="playerLastName" placeholder="Ex: Mbappé" required>
+                </div>
+                <div class="form-group">
+                    <label>Numéro de Maillot</label>
+                    <input type="number" id="playerJersey" min="1" max="99" placeholder="Ex: 7" required>
+                </div>
+                <div class="form-group">
+                    <label>Poste / Position</label>
+                    <select id="playerPosition" required>
+                        <option value="Gardien">Gardien</option>
+                        <option value="Défenseur">Défenseur</option>
+                        <option value="Milieu">Milieu</option>
+                        <option value="Attaquant">Attaquant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Équipe du Joueur</label>
+                    <select id="playerTeamId" required style="width: 100%; padding: 8px; border-radius: 4px; background: #fff; border: 1px solid #ddd; font-weight: bold;">
+                      <option value="">-- Chargement des équipes... --</option>
+                    </select>
+                </div>
+                <button type="submit" style="background: #00ff87; color: #121824;">Enregistrer le Joueur</button>
+            </form>
+        </div>
+    </div>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
