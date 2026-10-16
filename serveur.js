@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 
   let requestedPath;
   try {
-    requestedPath = decodeURIComponent(req.path); // même décodage que express.static
+    requestedPath = decodeURIComponent(req.path); 
   } catch (error) {
     return res.status(400).send('Requête invalide.');
   }
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
   return res.status(404).send('Page introuvable.');
 });
 
-app.use(express.static(__dirname)); // Distribue les fichiers publics autorisés ci-dessus
+app.use(express.static(__dirname)); 
 
 // --- SECTION DES IMPORTS (Un seul de chaque !) ---
 const statsRoutes = require('./src/routes/statsRoutes');
