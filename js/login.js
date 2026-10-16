@@ -31,7 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("⚡ Étape 5 : Envoi des données vers le serveur Node pour :", email);
 
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/auth/login', {
+            // URL relative : le cookie de session doit être posé sur le même site que la page (localhost:5000)
+            const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("🎉 Étape 7 : Authentification validée !");
                 localStorage.setItem('adminToken', data.token);
                 alert('✅ Connexion réussie !');
-                window.location.href = 'dashboard.html';
+                window.location.href = '/dashboard.html';
             } else {
                 console.warn("⚠️ Le serveur a rejeté les identifiants :", data.message);
                 alert(`⚠️ Échec : ${data.message}`);

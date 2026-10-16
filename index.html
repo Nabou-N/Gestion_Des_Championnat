@@ -34,7 +34,8 @@
                 <a href="stats.html">Statistiques</a>
                 <a href="teams.html">Équipes</a>
                 <a href="login.html">Connexion</a>
-                <a href="dashboard.html">Admin</a>
+                <!-- Caché par défaut : js/nav.js l'affiche uniquement si la personne est connectée -->
+                <a href="dashboard.html" id="adminLink" style="display: none;">Admin</a>
 
             </div>
         </nav>
@@ -100,6 +101,7 @@
         </div>
     </div>
     <!-- Conservation de votre fichier de script d'origine -->
+    <script src="js/nav.js"></script>
     <script src="js/ranking.js"></script>
 </body>
 </html>

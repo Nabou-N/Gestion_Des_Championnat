@@ -27,11 +27,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
+        logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             localStorage.removeItem('adminToken');
+            // Supprime aussi le cookie de session côté serveur (sinon dashboard.html resterait accessible)
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+            } catch (error) {
+                console.warn("Déconnexion serveur impossible :", error);
+            }
             alert("👋 Déconnexion réussie ! Vos accès sont verrouillés.");
-            window.location.replace('login.html');
+            window.location.replace('index.html');
         });
     }
 
@@ -160,10 +166,29 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================================
     // 🎛️ FILTRAGE STRICT EN TEMPS RÉEL : CLUBS DOMICILE VS EXTÉRIEUR
     // =========================================================================
+    // Remet à zéro le compteur de score et les événements saisis (buts / cartons) pour le match en cours
+    const resetMatchSheet = () => {
+        currentMatchGoals = [];
+        currentMatchCards = [];
+
+        const scoreHomeInput = document.getElementById("scoreHome");
+        const scoreAwayInput = document.getElementById("scoreAway");
+        if (scoreHomeInput) scoreHomeInput.value = 0;
+        if (scoreAwayInput) scoreAwayInput.value = 0;
+
+        const goalsList = document.getElementById("temporaryGoalsList");
+        const cardsList = document.getElementById("temporaryCardsList");
+        if (goalsList) goalsList.innerHTML = "";
+        if (cardsList) cardsList.innerHTML = "";
+    };
+
     if (scoreMatchSelect) {
         scoreMatchSelect.addEventListener("change", (e) => {
             const selectedMatchId = parseInt(e.target.value);
-            
+
+            // Nouveau match choisi : on repart d'un score 0 - 0 et d'une feuille de match vide
+            resetMatchSheet();
+
             if (isNaN(selectedMatchId)) {
                 if (eventsSection) eventsSection.style.display = "none";
                 return;

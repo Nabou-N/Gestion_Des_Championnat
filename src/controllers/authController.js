@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { buildAuthCookie, clearAuthCookie } = require('../middlewares/pageAuth');
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -27,8 +28,22 @@ exports.login = async (req, res) => {
       { expiresIn: '2h' }
     );
 
+    // 4. Cookie de session (HttpOnly) : permet au serveur de n'afficher dashboard.html qu'aux personnes connectées
+    res.setHeader('Set-Cookie', buildAuthCookie(token, req));
+
     res.status(200).json({ token, message: 'Connexion réussie !' });
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de l\'authentification.', error: error.message });
   }
+};
+
+// Vérifie qu'un jeton est valide (la route est protégée par verifyToken) : sert à afficher le lien « Admin »
+exports.me = (req, res) => {
+  res.status(200).json({ authenticated: true, role: req.user.role });
+};
+
+// Déconnexion : supprime le cookie de session (le navigateur supprime lui-même le jeton du localStorage)
+exports.logout = (req, res) => {
+  res.setHeader('Set-Cookie', clearAuthCookie(req));
+  res.status(200).json({ message: 'Déconnexion réussie.' });
 };
