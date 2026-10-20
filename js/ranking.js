@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================
     const loadRanking = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/teams/ranking");
+            const response = await fetch("/api/teams/ranking");
             
             if (!response.ok) {
                 throw new Error("Erreur lors de la récupération des données serveurs");
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!matchesContainer) return;
 
         try {
-            const response = await fetch("http://localhost:5000/api/matches");
+            const response = await fetch("/api/matches");
             if (!response.ok) throw new Error("Erreur lors de la récupération des matchs");
             
             const matches = await response.json();
