@@ -20,3 +20,6 @@
     "pg": "^8.23.0"
   }
 }
+   "scripts": {
+     "start": "node serveur.js"
+   }
